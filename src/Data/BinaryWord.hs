@@ -23,7 +23,11 @@ import Data.Bits (Bits(..))
 import Data.Bits (FiniteBits(..))
 #endif
 #if __GLASGOW_HASKELL__ >= 705
+#ifndef ETA_VERSION
 import GHC.Prim (plusWord2#, timesWord2#)
+#else
+-- Eta bits here
+#endif
 # if WORD_SIZE_IN_BITS == 32
 import GHC.Word (Word32(..))
 # endif
@@ -211,7 +215,7 @@ instance BinaryWord Word32 where
   {-# INLINE unsignedWord #-}
   signedWord = fromIntegral
   {-# INLINE signedWord #-}
-#if __GLASGOW_HASKELL__ >= 705 && WORD_SIZE_IN_BITS == 32
+#if __GLASGOW_HASKELL__ >= 705 && WORD_SIZE_IN_BITS == 32 && !defined(ETA_VERSION)
   unwrappedAdd (W32# x) (W32# y) = hi `seq` lo `seq` (hi, lo)
     where (# hi', lo' #) = plusWord2# x y
           lo = W32# lo'
@@ -223,7 +227,7 @@ instance BinaryWord Word32 where
           hi = fromIntegral (shiftR s 32)
 #endif
   {-# INLINE unwrappedAdd #-}
-#if __GLASGOW_HASKELL__ >= 705 && WORD_SIZE_IN_BITS == 32
+#if __GLASGOW_HASKELL__ >= 705 && WORD_SIZE_IN_BITS == 32 && !defined(ETA_VERSION)
   unwrappedMul (W32# x) (W32# y) = hi `seq` lo `seq` (hi, lo)
     where (# hi', lo' #) = timesWord2# x y
           lo = W32# lo'
@@ -288,7 +292,7 @@ instance BinaryWord Word64 where
   {-# INLINE unsignedWord #-}
   signedWord = fromIntegral
   {-# INLINE signedWord #-}
-#if __GLASGOW_HASKELL__ >= 705 && WORD_SIZE_IN_BITS == 64
+#if __GLASGOW_HASKELL__ >= 705 && WORD_SIZE_IN_BITS == 64 && !defined(ETA_VERSION)
   unwrappedAdd (W64# x) (W64# y) = hi `seq` lo `seq` (hi, lo)
     where (# hi', lo' #) = plusWord2# x y
           lo = W64# lo'
@@ -300,7 +304,7 @@ instance BinaryWord Word64 where
           hi = if lo < x then 1 else 0
   {-# INLINABLE unwrappedAdd #-}
 #endif
-#if __GLASGOW_HASKELL__ >= 705 && WORD_SIZE_IN_BITS == 64
+#if __GLASGOW_HASKELL__ >= 705 && WORD_SIZE_IN_BITS == 64 && !defined(ETA_VERSION)
   unwrappedMul (W64# x) (W64# y) = hi `seq` lo `seq` (hi, lo)
     where (# hi', lo' #) = timesWord2# x y
           lo = W64# lo'
